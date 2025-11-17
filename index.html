@@ -2,53 +2,159 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Міні-Магазин</title>
+<title>Суші Магазин</title>
 <style>
     body {
         font-family: Arial, sans-serif;
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 0 15px;
+        background:#f3f3f3;
+        margin:0;
+        padding:20px;
     }
-    h1 { text-align: center; }
-    .product {
-        border: 1px solid #ccc;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 8px;
+    h1 { text-align:center; }
+
+    .products {
+        display:flex;
+        gap:20px;
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+    .item {
+        background:white;
+        padding:15px;
+        width:200px;
+        border-radius:10px;
+        box-shadow:0 0 10px rgba(0,0,0,0.1);
+        text-align:center;
+    }
+    .item img {
+        width:100%;
+        border-radius:8px;
     }
     button {
-        padding: 8px 14px;
-        background: #4CAF50;
-        border: none;
-        color: #fff;
-        cursor: pointer;
-        border-radius: 4px;
+        margin-top:10px;
+        padding:8px 12px;
+        background:#ff6b00;
+        border:none;
+        color:white;
+        border-radius:6px;
+        cursor:pointer;
     }
-    button:hover { background: #45a049; }
-    #cart {
-        margin-top: 30px;
-        padding: 15px;
-        border: 2px solid #333;
-        border-radius: 8px;
+
+    /* Кошик */
+    #cartBox {
+        position:fixed;
+        right:20px;
+        bottom:20px;
+        width:300px;
+        background:white;
+        border-radius:10px;
+        box-shadow:0 0 15px rgba(0,0,0,0.2);
+        overflow:hidden;
+        transition:0.3s;
+    }
+    #cartHeader {
+        padding:10px;
+        background:#ff6b00;
+        color:white;
+        cursor:pointer;
+    }
+    #cartContent {
+        max-height:0;
+        overflow:hidden;
+        transition:0.3s;
+        padding:0 10px;
+    }
+    #cartContent.open {
+        padding:10px;
+        max-height:400px;
+    }
+    .cart-item {
+        display:flex;
+        justify-content:space-between;
+        padding:5px 0;
+        border-bottom:1px solid #eee;
+    }
+    #total {
+        font-weight:bold;
+        margin-top:10px;
     }
 </style>
 </head>
 <body>
 
-<h1>Магазин</h1>
+<h1>Суші Магазин</h1>
 
-<div class="product">
-    <h2>Продукт 1: Кружка</h2>
-    <p>Ціна: <strong>150 грн</strong></p>
-    <button onclick="addToCart('Кружка', 150)">Додати до кошика</button>
+<div class="products">
+    <div class="item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZGU-njnG5_lKS4TLJZVIdi1SC6-ByJGjew&s">
+        <h3>Філадельфія</h3>
+        <p>230 грн</p>
+        <button onclick="addToCart('Філадельфія',230)">Додати</button>
+    </div>
+    <div class="item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZGU-njnG5_lKS4TLJZVIdi1SC6-ByJGjew&s">
+        <h3>Каліфорнія</h3>
+        <p>210 грн</p>
+        <button onclick="addToCart('Каліфорнія',210)">Додати</button>
+    </div>
+    <div class="item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZGU-njnG5_lKS4TLJZVIdi1SC6-ByJGjew&s3">
+        <h3>Сет Самурай</h3>
+        <p>480 грн</p>
+        <button onclick="addToCart('Сет Самурай',480)">Додати</button>
+    </div>
+    <div class="item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZGU-njnG5_lKS4TLJZVIdi1SC6-ByJGjew&s">
+        <h3>Унагі Рол</h3>
+        <p>260 грн</p>
+        <button onclick="addToCart('Унагі Рол',260)">Додати</button>
+    </div>
+    <div class="item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZGU-njnG5_lKS4TLJZVIdi1SC6-ByJGjew&s">
+        <h3>Теплий Рол</h3>
+        <p>190 грн</p>
+        <button onclick="addToCart('Теплий Рол',190)">Додати</button>
+    </div>
 </div>
 
-<div class="product">
-    <h2>Продукт 2: Футболка</h2>
-    <p>Ціна: <strong>350 грн</strong></p>
-    <button onclick="addToCart('Футболка', 350)">Додати до кошика</button>
+<!-- Кошик -->
+<div id="cartBox">
+    <div id="cartHeader" onclick="toggleCart()">🛒 Кошик</div>
+    <div id="cartContent">
+        <div id="cartItems"></div>
+        <div id="total">Разом: 0 грн</div>
+    </div>
 </div>
 
-<div id="cart">
-    <h2>Ко
+<script>
+let cart = [];
+
+function addToCart(name, price) {
+    cart.push({name, price});
+    updateCart();
+}
+
+function updateCart() {
+    const cartItems = document.getElementById("cartItems");
+    cartItems.innerHTML = "";
+
+    let total = 0;
+    cart.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "cart-item";
+        el.innerHTML = `<span>${item.name}</span> <span>${item.price} грн</span>`;
+        cartItems.appendChild(el);
+        total += item.price;
+    });
+
+    document.getElementById("total").innerText = "Разом: " + total + " грн";
+}
+
+function toggleCart() {
+    const cartContent = document.getElementById("cartContent");
+    cartContent.classList.toggle("open");
+}
+</script>
+
+</body>
+</html>
