@@ -1,2 +1,54 @@
-# itumkagrand-arch.github.io
-Test site
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Міні-Магазин</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+    h1 { text-align: center; }
+    .product {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+    button {
+        padding: 8px 14px;
+        background: #4CAF50;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    button:hover { background: #45a049; }
+    #cart {
+        margin-top: 30px;
+        padding: 15px;
+        border: 2px solid #333;
+        border-radius: 8px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Магазин</h1>
+
+<div class="product">
+    <h2>Продукт 1: Кружка</h2>
+    <p>Ціна: <strong>150 грн</strong></p>
+    <button onclick="addToCart('Кружка', 150)">Додати до кошика</button>
+</div>
+
+<div class="product">
+    <h2>Продукт 2: Футболка</h2>
+    <p>Ціна: <strong>350 грн</strong></p>
+    <button onclick="addToCart('Футболка', 350)">Додати до кошика</button>
+</div>
+
+<div id="cart">
+    <h2>Ко
